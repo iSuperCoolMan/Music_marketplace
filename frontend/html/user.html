@@ -1,0 +1,44 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Мой профиль / Продажа товаров</h1>
+
+<body>
+    <h2>Мой профиль</h2>
+    <h3>Добавить новый продукт</h3>
+    <form method="post" action="/post_product">
+        <input type="hidden" name="token" value="{{ token }}">
+        <label>Название:</label>
+        <input type="text" name="name" required />
+
+        <br />
+
+        <label>Цена:</label>
+        <input type="number" name="price" step="1" required />
+
+        <br />
+
+        <label>Количество:</label>
+        <input type="number" name="count" step="1" required />
+
+        <br />
+
+        <button type="submit">Добавить продукт</button>
+    </form>
+
+    <h2>Ваши продукты для продажи</h2>
+    {% if products %}
+        <ul>
+        {% for product in products %}
+            <li>
+                <strong>{{ product.name }}</strong><br>
+                Цена: {{ product.price }}<br>
+                Кол-во: {{ product.stock }} руб.<br>
+            </li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        <p>У вас пока нет продуктов для продажи.</p>
+    {% endif %}
+</body>
+{% endblock %}

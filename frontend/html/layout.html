@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>Интернет-магазин</title>
+<!--    <link rel="stylesheet" href="/static/style.css" />-->
+</head>
+<body>
+    <header>
+        {% if token %}
+            <nav>
+                <a href="/">Главная</a>
+                <a href="/user">Личная страница</a>
+                <a href="/exit">Выйти</a>
+                <a href="/cart">Корзина</a>
+            </nav>
+        {% else %}
+            <nav>
+                <a href="/">Главная</a>
+                <a href="/login">Войти</a>
+                <a href="/register">Зарегистрироваться</a>
+                <a href="/cart">Корзина</a>
+            </nav>
+        {% endif %}
+    </header>
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+</body>
+</html>
