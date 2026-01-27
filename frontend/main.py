@@ -19,12 +19,19 @@ templates = Jinja2Templates(directory="frontend/html")
 @router.get("/", response_class=HTMLResponse)
 async def read_home(request: Request):
     products = await get_all_products()
+    cart_ids = frontend.database.get_ids_from_cart()
+
+    for product in products:
+        if product["id"] in cart_ids:
+            product["in_cart"] = frontend.database.get_count_from_cart(product["id"])
+        else:
+            product["in_cart"] = 0
+
     return templates.TemplateResponse(
         "main.html",
         {
             "request": request,
             "products": products,
-            "cart": frontend.database.get_all_from_cart(),
             "token": frontend.cookies.user["token"]
         }
     )

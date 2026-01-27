@@ -10,37 +10,21 @@
     <p>Кол-во: {{ product.stock }}</p>
     <p>Продавец: {{ product.seller }}</p>
 
-    {% set item_in_cart = None %}
-    {% if cart %}
-      {% for item in cart %}
-        {% if item.id == product.id %}
-          {% set item_in_cart = item %}
-        {% endif %}
-        {% if loop.last %}
-          {% if item_in_cart %}
-            <!-- Товар уже в корзине: показываем +, -, количество -->
-            <form method="post" action="/update_cart">
-              <input type="hidden" name="product_id" value="{{ product.id }}">
-              <input type="hidden" name="endpoint_url" value="/">
-              <button type="submit" name="action" value="decrease">-</button>
-              <span>{{ item_in_cart.count }}</span>
-              <button type="submit" name="action" value="increase">+</button>
-            </form>
-          {% else %}
-            <!-- Товар еще не в корзине: показываем "Добавить" -->
-            <form method="post" action="/add_to_cart">
-              <input type="hidden" name="product_id" value="{{ product.id }}">
-              <button type="submit">Добавить в корзину</button>
-            </form>
-          {% endif %}
-        {% endif %}
-      {% endfor %}
+    {% if product.in_cart > 0 %}
+      <!-- Товар уже в корзине: показываем +, -, количество -->
+      <form method="post" action="/update_cart">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <input type="hidden" name="endpoint_url" value="/">
+        <button type="submit" name="action" value="decrease">-</button>
+        <span>{{ product.in_cart }}</span>
+        <button type="submit" name="action" value="increase">+</button>
+      </form>
     {% else %}
-    <!-- Товар еще не в корзине: показываем "Добавить" -->
-    <form method="post" action="/add_to_cart">
-      <input type="hidden" name="product_id" value="{{ product.id }}">
-      <button type="submit">Добавить в корзину</button>
-    </form>
+      <!-- Товар еще не в корзине: показываем "Добавить" -->
+      <form method="post" action="/add_to_cart">
+        <input type="hidden" name="product_id" value="{{ product.id }}">
+        <button type="submit">Добавить в корзину</button>
+      </form>
     {% endif %}
   </div>
 {% endfor %}

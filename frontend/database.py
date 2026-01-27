@@ -61,13 +61,6 @@ def get_count_from_cart(cursor: Cursor, id: str):
 
 
 @set_connection
-def get_all_from_cart(cursor: Cursor):
-    cursor.execute('SELECT * FROM Cart')
-
-    return [{"id": item[0], "count": item[1]} for item in cursor.fetchall()]
-
-
-@set_connection
 def get_ids_from_cart(cursor: Cursor):
     cursor.execute('SELECT * FROM Cart')
 
