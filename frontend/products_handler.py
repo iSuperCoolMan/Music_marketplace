@@ -1,5 +1,4 @@
 from fastapi import APIRouter, Form
-from starlette.requests import Request
 from starlette.responses import RedirectResponse
 from starlette.templating import Jinja2Templates
 

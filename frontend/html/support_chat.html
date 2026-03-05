@@ -1,0 +1,67 @@
+{% block content %}
+<style>
+  /* Основной контейнер для чата */
+  #support-chat-container {
+    position: fixed;
+    bottom: 20px; /* расстояние от низа */
+    right: 20px;  /* расстояние от правого края */
+    width: 300px; /* ширина окна чата */
+    height: 400px; /* высота окна */
+    z-index: 9999; /* чтобы был поверх всего */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 8px;
+  }
+
+  /* область сообщений */
+  #support-chat {
+    flex: 1;
+    background: #fff;
+    padding: 10px;
+    overflow-y: auto;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  /* форма для ввода */
+  #support-form {
+    display: flex;
+    border-top: 1px solid #ccc;
+  }
+
+  #support-form input {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 0 0 0 8px;
+  }
+
+  #support-form button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 0 0 8px 0;
+    cursor: pointer;
+  }
+
+  #support-form button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<div id="support-chat-container">
+  <div id="support-chat">
+    {% for message in messages %}
+      <div style="margin-bottom: 10px; {% if message.sender == 'support' %} text-align: left; {% else %} text-align: right; {% endif %}">
+        <strong>{{ message.sender }}:</strong> {{ message.text }}
+      </div>
+    {% endfor %}
+  </div>
+  <form method="post" action="/send_message" id="support-form">
+    <input type="text" name="message" placeholder="Ваше сообщение..." required>
+    <button type="submit">Отправить</button>
+  </form>
+</div>
+{% endblock %}

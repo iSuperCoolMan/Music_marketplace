@@ -1,3 +1,13 @@
+from pydantic import BaseModel
+import uuid
+
+
+class BaseProduct(BaseModel):
+    uuid: uuid.UUID
+    price: int
+    name: str
+
+
 class Product:
     __id: str
     __name: str
