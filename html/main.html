@@ -1,0 +1,33 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Каталог товаров</h1>
+<div id="products-list">
+{% for product in products %}
+  <div>
+    <h3>{{ product.name }}</h3>
+    <p>Цена: {{ product.price }}</p>
+    <p>Кол-во: {{ product.quantity }}</p>
+    <p>Продавец: {{ product.seller_username }}</p>
+
+    {% if product.quantity_in_cart > 0 %}
+      <!-- Товар уже в корзине: показываем +, -, количество -->
+      <form method="post" action="/update_cart">
+        <input type="hidden" name="product_uuid" value="{{ product.uuid }}">
+        <input type="hidden" name="endpoint_url" value="/">
+        <button type="submit" name="action" value="decrease">-</button>
+        <span>{{ product.quantity_in_cart }}</span>
+        <button type="submit" name="action" value="increase">+</button>
+        <span>итого: {{ product.total_price }}</span>
+      </form>
+    {% else %}
+      <!-- Товар еще не в корзине: показываем "Добавить" -->
+      <form method="post" action="/add_to_cart">
+        <input type="hidden" name="product_uuid" value="{{ product.uuid }}">
+        <button type="submit">Добавить в корзину</button>
+      </form>
+    {% endif %}
+  </div>
+{% endfor %}
+</div>
+{% endblock %}

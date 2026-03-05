@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="47147340-1795-40f9-a0c0-b4f30ef78287" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/Marketplace.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/message.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/models.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/product.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/support_chat_session.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/db/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/cart.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/layout.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/login.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/main.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/register.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/support_chat.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/support_page.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/html/user.html" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/message.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/products.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/support_chat_session.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/models/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pyproject.toml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/cart.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/depends.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/login.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/main.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/product.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/products_handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/register.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/support_chat.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/support_page.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/routers/user.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/servises/token_handler.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/settings.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/uv.lock" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ws_managers/support.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/ws_managers/user.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="HTML File" />
+        <option value="Python Script" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 5
+}</component>
+  <component name="ProjectId" id="38t8lWE9Kv5T4Y9XAgpTb1adfGw" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "DefaultHtmlFileTemplate": "HTML File",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "Python.main.executor": "Run",
+    "Python.token_handler.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "git-widget-placeholder": "master",
+    "last_opened_file_path": "D:/PythonProjects/Marketplace/.venv",
+    "settings.editor.selected.configurable": "preferences.pluginManager"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\PythonProjects\Marketplace\.venv" />
+      <recent name="D:\PythonProjects\Marketplace\servises" />
+      <recent name="D:\PythonProjects\Marketplace\routers" />
+      <recent name="D:\PythonProjects\Marketplace" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\PythonProjects\Marketplace\db" />
+    </key>
+  </component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-python-sdk-598b0484d0b5-e2d783800521-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-251.26927.74" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="47147340-1795-40f9-a0c0-b4f30ef78287" name="Changes" comment="" />
+      <created>1769607658020</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1769607658020</updated>
+    </task>
+    <servers />
+  </component>
+</project>

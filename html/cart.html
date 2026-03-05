@@ -1,0 +1,58 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<h1>Ваша корзина</h1>
+
+{% if products %}
+    <table>
+        <thead>
+            <tr>
+                <th>Название</th>
+                <th>Цена за шт.</th>
+                <th>Количество</th>
+                <th>Общая цена</th>
+                <th>Действия</th> <!-- новая колонка -->
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.name }}</td>
+                    <td>{{ product.price }}</td>
+                    <td>{{ product.quantity_in_cart }}</td>
+                    <td>{{ product.total_price }}</td>
+                    <td>
+                        <!-- Кнопки + и - для изменения количества -->
+                        <form style="display:inline-block;" method="post" action="/update_cart">
+                            <input type="hidden" name="product_id" value="{{ product.id }}">
+                            <input type="hidden" name="endpoint_url" value="/cart">
+                            <button type="submit" style="width:30px;" name="action" value="increase">+</button>
+                            <button type="submit" style="width:30px;" name="action" value="decrease">−</button>
+                        </form>
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <!-- Общая стоимость всех товаров -->
+    <h3 style="text-align:center; margin-top:20px;">Общая стоимость: {{ cart_amount }}</h3>
+
+    <div style="margin-top:20px; display:flex; justify-content:center; gap:10px;">
+        <!-- Кнопка для возврата на главную -->
+        <form method="get" action="/">
+            <button type="submit">На главную</button>
+        </form>
+        <!-- Кнопка для оформления заказа -->
+        <form method="get" action="/checkout">
+            <button type="submit">Оформить заказ</button>
+        </form>
+    </div>
+{% else %}
+    <p style="text-align:center;">В корзине пусто.</p>
+    <div style="text-align:center;">
+        <form method="get" action="/">
+            <button type="submit">Вернуться к товарам</button>
+        </form>
+    </div>
+{% endif %}
+{% endblock %}

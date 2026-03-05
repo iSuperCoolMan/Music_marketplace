@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8" />
+<title>Интерактивный список активных чатов</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    display: flex;
+    gap: 20px;
+  }
+
+  #chats-container {
+    width: 300px;
+  }
+
+  #chats-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .chat-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f9f9f9;
+    padding: 10px;
+    margin-bottom: 8px;
+    border-radius: 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    cursor: pointer;
+    user-select: none;
+  }
+
+  .chat-item.active {
+    background-color: #007bff;
+    color: white;
+  }
+
+  .chat-name {
+    font-weight: bold;
+    flex-grow: 1;
+  }
+
+  button.remove-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 6px 10px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+
+  button.remove-btn:hover {
+    background-color: #c82333;
+  }
+
+  #chat-window {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    height: 500px;
+  }
+
+  #messages {
+    flex-grow: 1;
+    padding: 10px;
+    overflow-y: auto;
+    background: #fafafa;
+    border-bottom: 1px solid #ddd;
+  }
+
+  .message {
+    margin-bottom: 10px;
+  }
+
+  .message .sender {
+    font-weight: bold;
+    margin-right: 5px;
+  }
+
+  #input-area {
+    display: flex;
+    padding: 10px;
+  }
+
+  #message-input {
+    flex-grow: 1;
+    padding: 8px;
+    font-size: 14px;
+  }
+
+  #send-btn {
+    padding: 8px 12px;
+    margin-left: 8px;
+    cursor: pointer;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+  }
+  #send-btn:disabled {
+    background-color: #a0c8ff;
+    cursor: not-allowed;
+  }
+</style>
+</head>
+<body>
+
+<div id="chats-container">
+  <h2>Список активных чатов</h2>
+  <ul id="chats-list"></ul>
+</div>
+
+<div id="chat-window" style="display:none;">
+  <div id="messages"></div>
+  <div id="input-area">
+    <input type="text" id="message-input" placeholder="Введите сообщение..." />
+    <button id="send-btn" disabled>Отправить</button>
+  </div>
+</div>
+
+<script>
+  const chatList = document.getElementById('chats-list');
+  const chatWindow = document.getElementById('chat-window');
+  const messagesContainer = document.getElementById('messages');
+  const messageInput = document.getElementById('message-input');
+  const sendBtn = document.getElementById('send-btn');
+
+  let activeChatId = null;
+  let chats = {}; // {id: {name: string, messages: array}}
+
+  // Создаем WebSocket соединение
+  const socket = new WebSocket('ws://localhost:8000/ws/support'); // Замените URL
+
+  socket.onopen = () => {
+    console.log("WebSocket соединение установлено.");
+    sendBtn.disabled = false;
+  };
+
+  socket.onerror = error => {
+    console.error('WebSocket ошибка:', error);
+    sendBtn.disabled = true;
+  };
+
+  socket.onclose = () => {
+    console.log('WebSocket соединение закрыто');
+    sendBtn.disabled = true;
+  };
+
+  socket.onmessage = event => {
+    const data = JSON.parse(event.data);
+
+    if (data.action === 'add') {
+      addChat(data.id, data.name);
+    } else if (data.action === 'remove') {
+      removeChat(data.id);
+    } else if (data.action === 'message') {
+      receiveMessage(data.id, data.sender, data.text, data.time);
+    }
+  };
+
+  // Добавить чат в список
+  function addChat(id, name) {
+    if (chats[id]) return; // уже есть
+
+    chats[id] = { name, messages: [] };
+
+    const li = document.createElement('li');
+    li.className = 'chat-item';
+    li.id = id;
+    li.innerHTML = `
+      <span class="chat-name">${name}</span>
+      <button class="remove-btn" data-id="${id}">Удалить</button>
+    `;
+
+    // Клик по чату - активируем его и показываем чат
+    li.addEventListener('click', () => selectChat(id));
+
+    // Кнопка удаления - отправляем remove серверу
+    li.querySelector('.remove-btn').addEventListener('click', e => {
+      e.stopPropagation(); // чтобы не триггерить selectChat
+      socket.send(JSON.stringify({ action: 'remove', id }));
+    });
+
+    chatList.appendChild(li);
+
+    if (!activeChatId) {
+      selectChat(id);
+    }
+  }
+
+  // Удалить чат из списка и очистить если он открыт
+  function removeChat(id) {
+    delete chats[id];
+    const elem = document.getElementById(id);
+    if (elem) elem.remove();
+
+    if (activeChatId === id) {
+      activeChatId = null;
+      clearMessages();
+      chatWindow.style.display = 'none';
+    }
+  }
+
+  // Выбрать чат и показать переписку
+  function selectChat(id) {
+    if (activeChatId === id) return;
+
+    // Снять подсветку предыдущего
+    if (activeChatId) {
+      const prev = document.getElementById(activeChatId);
+      if (prev) prev.classList.remove('active');
+    }
+
+    activeChatId = id;
+
+    const current = document.getElementById(id);
+    if (current) current.classList.add('active');
+
+    chatWindow.style.display = 'flex';
+
+    renderMessages();
+  }
+
+  // Показать все сообщения активного чата
+  function renderMessages() {
+    clearMessages();
+    if (!activeChatId) return;
+
+    chats[activeChatId].messages.forEach(({ sender, text, time }) => {
+      addMessageToDom(sender, text, time);
+    });
+    scrollMessagesBottom();
+  }
+
+  // Добавить одно сообщение в DOM
+  function addMessageToDom(sender, text, time) {
+    const div = document.createElement('div');
+    div.classList.add('message');
+
+    const senderSpan = document.createElement('span');
+    senderSpan.className = 'sender';
+    senderSpan.textContent = sender + ':';
+
+    const msgSpan = document.createElement('span');
+    msgSpan.textContent = ' ' + text;
+
+    const timeSpan = document.createElement('span');
+    timeSpan.style.float = 'right';
+    timeSpan.style.fontSize = '0.8em';
+    timeSpan.style.color = '#888';
+    timeSpan.textContent = time;
+
+    div.appendChild(senderSpan);
+    div.appendChild(msgSpan);
+    div.appendChild(timeSpan);
+
+    messagesContainer.appendChild(div);
+  }
+
+  // Очистить окно сообщений
+  function clearMessages() {
+    messagesContainer.innerHTML = '';
+  }
+
+  // Скроллить вниз
+  function scrollMessagesBottom() {
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+  }
+
+  // Получить сообщение с сервера от пользователя
+  function receiveMessage(chatId, sender, text, time) {
+    if (!chats[chatId]) {
+      // автоматически добавить чат если его еще нет
+      addChat(chatId, chatId);
+    }
+
+    chats[chatId].messages.push({ sender, text, time });
+
+    // Если сейчас открыт этот чат - отрендерить последнее сообщение
+    if (activeChatId === chatId) {
+      addMessageToDom(sender, text, time);
+      scrollMessagesBottom();
+    }
+  }
+
+  // Отправить сообщение серверу из активного чата
+  sendBtn.onclick = () => {
+    const text = messageInput.value.trim();
+    if (!text || !activeChatId) return;
+
+    // отправляем сообщение в формате, договоритесь с сервером
+    const msgData = {
+      action: 'message',
+      id: activeChatId,
+      message: text,
+    };
+    socket.send(JSON.stringify(msgData));
+
+    scrollMessagesBottom();
+
+    messageInput.value = '';
+    messageInput.focus();
+  };
+
+  // Отправлять по Enter
+  messageInput.addEventListener('keydown', e => {
+    if (e.key === 'Enter') sendBtn.onclick();
+  });
+</script>
+</body>
+</html>

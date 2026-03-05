@@ -1,0 +1,172 @@
+{% block content %}
+<style>
+  /* Основной контейнер для чата */
+  #support-chat-container {
+    position: fixed;
+    bottom: 20px; /* расстояние от низа */
+    right: 20px;  /* расстояние от правого края */
+    width: 300px; /* ширина окна чата */
+    height: 400px; /* высота окна */
+    z-index: 9999; /* чтобы был поверх всего */
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+    border-radius: 8px;
+  }
+
+  /* область сообщений */
+  #support-chat {
+    flex: 1;
+    background: #fff;
+    padding: 10px;
+    overflow-y: auto;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+  }
+
+  /* форма для ввода */
+  #support-form {
+    display: flex;
+    border-top: 1px solid #ccc;
+  }
+
+  #support-form input {
+    flex: 1;
+    padding: 8px;
+    border: none;
+    border-radius: 0 0 0 8px;
+  }
+
+  #support-form button {
+    padding: 8px 12px;
+    border: none;
+    background-color: #007bff;
+    color: white;
+    border-radius: 0 0 8px 0;
+    cursor: pointer;
+  }
+
+  #support-form button:hover {
+    background-color: #0056b3;
+  }
+</style>
+
+<div id="support-chat-container">
+  <div id="support-chat">
+    {% for message in messages %}
+      <div style="margin-bottom: 10px; {% if message.sender == 'support' %} text-align: left; {% else %} text-align: right; {% endif %}">
+        <strong>{{ message.sender }}:</strong> {{ message.text }}
+      </div>
+    {% endfor %}
+  </div>
+  <form method="post" action="/send_message" id="support-form">
+    <input type="text" name="message" placeholder="Ваше сообщение..." required>
+    <button type="submit">Отправить</button>
+  </form>
+</div>
+<script>
+  let socket = null;
+  let messageQueue = []; // очередь сообщений для отправки, если соединение еще не готово
+
+  const chatDiv = document.getElementById('support-chat');
+  const form = document.getElementById('support-form');
+  const input = form.querySelector('input[name="message"]');
+
+  // Инициализация WebSocket
+  function initWebSocket() {
+    socket = new WebSocket('ws://localhost:8000/ws/chat');
+
+    socket.onopen = () => {
+      console.log("WebSocket соединено");
+      // Отправляем все ожидающие сообщения
+      while (messageQueue.length > 0) {
+        socket.send(messageQueue.shift());
+      }
+    };
+
+    socket.onmessage = (event) => {
+      const log = fetch('/api/session/refresh', {method: 'POST'});
+      console.log(log);
+
+      const data = JSON.parse(event.data);
+      addMessage(data.sender, data.text, data.time);
+    };
+
+    socket.onerror = (error) => {
+      console.error('Ошибка WebSocket:', error);
+    };
+
+    socket.onclose = () => {
+      console.log('WebSocket закрыт.');
+    };
+  }
+
+  // Отправка сообщения
+  function sendMessage(msg) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      socket.send(msg);
+    } else {
+      // Если соединение еще не готово, помещаем сообщение в очередь
+      messageQueue.push(msg);
+      // Инициируем соединение, если оно не активно
+      if (!socket || socket.readyState === WebSocket.CLOSING || socket.readyState === WebSocket.CLOSED) {
+        const log = fetch('/api/session', {method: 'POST'});
+        console.log(log);
+        initWebSocket();
+      }
+    }
+  }
+
+  // Обработка отправки формы
+form.onsubmit = function(e) {
+    e.preventDefault();
+    const message = input.value.trim();
+    if (!message) return;
+
+    sendMessage(message);
+    input.value = '';
+  }
+
+  // Загрузка начальных сообщений и установка соединения
+window.addEventListener('DOMContentLoaded', () => {
+  // Получаем текущие сообщения
+  fetch('/api/session/messages')
+    .then(response => response.json())
+    .then(data => {
+      if (data && data.messages) {
+        loadChat(data);
+        initWebSocket();
+      }
+    })
+    .catch(error => {
+      console.error('Ошибка при получении сообщений:', error);
+    });
+});
+
+function loadChat(data) {
+  if (!data.messages || !Array.isArray(data.messages)) {
+    console.warn('Нет сообщений для отображения');
+    return;
+  }
+  data.messages.forEach(({ sender, text, time }) => {
+    addMessage(sender, text, time);
+  });
+}
+
+function addMessage(sender, text, time) {
+  const msgDiv = document.createElement('div');
+  msgDiv.style.marginBottom = '10px';
+
+  if (sender === 'support') {
+    msgDiv.style.textAlign = 'left';
+    msgDiv.innerHTML = `${time} <strong>Поддержка:</strong> ${text}`;
+  } else {
+    msgDiv.style.textAlign = 'right';
+    msgDiv.innerHTML = `${time} <strong>Я:</strong> ${text}`;
+  }
+
+  chatDiv.appendChild(msgDiv);
+  chatDiv.scrollTop = chatDiv.scrollHeight;
+}
+</script>
+{% endblock %}
