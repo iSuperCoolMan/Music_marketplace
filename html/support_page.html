@@ -139,6 +139,13 @@
 
   socket.onopen = () => {
     console.log("WebSocket соединение установлено.");
+
+    // fetch('/api/getActiveChats')
+    // .then((chats) => {
+    //   chats.forEach((chat) => {
+    //     addChat(chat);
+    //   })
+    // })
     sendBtn.disabled = false;
   };
 
@@ -153,6 +160,10 @@
   };
 
   socket.onmessage = event => {
+    console.log('support_page onmessage');
+    console.log('event: ', event);
+    
+
     const data = JSON.parse(event.data);
 
     if (data.action === 'add') {
