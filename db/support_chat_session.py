@@ -51,7 +51,7 @@ async def get_chat_session_by_uuid(session: Session, uuid: UUID) -> SupportChatS
         messages=[Message(
             uuid=message.uuid,
             text=message.text,
-            date_time=message.date_time,
+            date_time=message.date_time.strftime("%H:%M:%S"),
             user_uuid=message.user_uuid,
             session_uuid=message.session_uuid
         ) for message in chat_session.messages]

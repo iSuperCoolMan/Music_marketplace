@@ -7,6 +7,6 @@ from pydantic import BaseModel
 class Message(BaseModel):
     uuid: UUID
     text: str
-    date_time: datetime
+    date_time: str
     user_uuid: UUID | None
     session_uuid: UUID

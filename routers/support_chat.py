@@ -9,6 +9,7 @@ from starlette.responses import Response
 
 from db.message import try_create_message
 from db.support_chat_session import get_chat_session_by_uuid, create_chat_session
+from models.message import Message
 from ws_managers.user import user_manager
 from ws_managers.support import support_manager
 from settings import directories
