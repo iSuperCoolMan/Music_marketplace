@@ -31,10 +31,10 @@ app.include_router(user_router)
 app.include_router(support_page_router)
 
 
-@app.middleware("http")
-async def print_cookies(request: Request, call_next):
-    print(f"  log  headers = {request.headers}")
-    print(f"  log  cookies = {request.cookies}")
-
-    response = await call_next(request)
-    return response
+# @app.middleware("http")
+# async def print_cookies(request: Request, call_next):
+#     print(f"  log  headers = {request.headers}")
+#     print(f"  log  cookies = {request.cookies}")
+#
+#     response = await call_next(request)
+#     return response
